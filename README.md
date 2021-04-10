@@ -1,6 +1,8 @@
 # TheOldCubeParts
 Some scripts from actual project
 
+Game on [Google Play](https://play.google.com/store/apps/details?id=com.BubbleGamesStudio.TheOldCube)
+
 # The Old Cube
 Game I've published (currently in verification procees) on Google Play. Based on Unity/C#.
 
