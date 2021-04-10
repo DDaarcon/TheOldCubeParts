@@ -4,7 +4,7 @@ Some scripts from actual project
 Game on [Google Play](https://play.google.com/store/apps/details?id=com.BubbleGamesStudio.TheOldCube)
 
 # The Old Cube
-Game I've published (currently in verification procees) on Google Play. Based on Unity/C#.
+Game I've published on Google Play. Based on Unity/C#.
 
 ![Icon](https://github.com/DDaarcon/TheOldCubeParts/blob/main/TheOldCube_ReleaseData/icon_512_cropped.png)
 
