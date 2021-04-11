@@ -14,10 +14,21 @@ Worth seeing:
 The "core" of application. Important: I wrote code by myself and it wasn't intended to be shown in public so there are comments in both english and polish.
 
 [PiecePG](https://github.com/DDaarcon/TheOldCubeParts/blob/main/Assets/Scripts/PiecePG.cs) and [PiecePartMeshGenerate](https://github.com/DDaarcon/TheOldCubeParts/blob/main/Assets/Scripts/PiecePartMeshGenerate.cs) - 
-Precedurally generated mesh for pieces
+Precedurally generated mesh for pieces:
+I've done all calculations to generate vertices, triangles and UVs of pieces displayed on screen. Because of that I can almost freely control their's shapes (I'm using it to easily create new themes). Decay animation also relies on this feature.
+
 
 [SolutionGenerator](https://github.com/DDaarcon/TheOldCubeParts/blob/main/Assets/Scripts/SolutionGenerator.cs) - 
-Generation of solution depending on seed
+Generation of solution depending on seed:
+Generating puzzles from seed allows me to store just one int for every predefined level in game (+ info which sides are placed from start).
+
+[ScreenOrientationSript](https://github.com/DDaarcon/TheOldCubeParts/blob/main/Assets/Scripts/ScreenOrientationScript.cs) -
+Load of portrait and landscape layouts:
+To properly display all UI elements, I store Transforms data (such as anchored position, size, scale) and apply them to the right GameObjects when device rotation occurs.
+
+[ThemeButton](https://github.com/DDaarcon/TheOldCubeParts/blob/main/Assets/Scripts/ThemeButton.cs) -
+This script is responsible (with PiecePG and GameScript) for applying themes. Checking unlocking conditions also happens here.
+
 
 PL:
 
