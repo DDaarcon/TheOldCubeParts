@@ -15,7 +15,7 @@ The "core" of application. Important: I wrote code by myself and it wasn't inten
 
 [PiecePG](https://github.com/DDaarcon/TheOldCubeParts/blob/main/Assets/Scripts/PiecePG.cs) and [PiecePartMeshGenerate](https://github.com/DDaarcon/TheOldCubeParts/blob/main/Assets/Scripts/PiecePartMeshGenerate.cs) - 
 Precedurally generated mesh for pieces:
-I've done all calculations to generate vertices, triangles and UVs of pieces displayed on screen. Because of that I can almost freely control their's shapes (I'm using it to easily create new themes). Decay animation also relies on this feature.
+I've done all calculations to generate vertices, triangles and UVs of pieces displayed on screen. Because of that I can almost freely control their shapes (I'm using it to easily create new themes). Decay animation also relies on this feature.
 
 
 [SolutionGenerator](https://github.com/DDaarcon/TheOldCubeParts/blob/main/Assets/Scripts/SolutionGenerator.cs) - 
