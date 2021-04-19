@@ -212,6 +212,11 @@ public class GameScript : MonoBehaviour
         }
         Debug.Log(et);
     }
+    /// <summary>
+    /// Debug method: Print in console setting of an side
+    /// </summary>
+    /// <param name="setting">Setting to print</param>
+    /// <param name="precedingMsg">Message before printing setting</param>
     public void VisualizeDataFromSetting(bool[,] setting, string precedingMsg = "") {
         string et = precedingMsg;
         et += " (setting): \n";
@@ -224,11 +229,18 @@ public class GameScript : MonoBehaviour
         Debug.Log(et);
     }
     #endif
+    /// <summary>
+    /// Clear all sides (set with just 0s)
+    /// </summary>
     private void SetEmptyGameSolution() {
         for (int o = 0; o < 6; o++){
             SetEmptySideOnGameSolution((Side)o);
         }
     }
+    /// <summary>
+    /// Set choosed side empty (with just 0s)
+    /// </summary>
+    /// <param name="side_">Side you want to set empty</param>
     private void SetEmptySideOnGameSolution(Side side_) {
         for (int i = 0; i < variantInt; i++) {
             for (int j = 0; j < variantInt; j++) {
@@ -237,7 +249,9 @@ public class GameScript : MonoBehaviour
         }
     }
     
-    // direction aNd side
+    /// <summary>
+    /// Direction and Side in one struct
+    /// </summary>
     private struct dNs {
         public Side s;
         public Dir d;
@@ -246,12 +260,13 @@ public class GameScript : MonoBehaviour
             d = d_;
         }
     }
-    // representation of data below should be in some file for information purposes
-    /**
-    <value>Data for correct calculating if side which is being placed fits with others.
-    For certain [side, direction] get side it touches in this direction</value>
-    **/
-    private dNs[,] properEdge = new dNs[6, 4] {
+
+    /// <summary>
+    /// Data for correct calculating if side which is being placed fits with others.
+    /// For certain [side, direction] get side it touches in this direction
+    /// </summary>
+    /// <value></value>
+    private readonly dNs[,] properEdge = new dNs[6, 4] {
         {new dNs(Side.back, Dir.D), new dNs(Side.left, Dir.R), new dNs(Side.front, Dir.U), new dNs(Side.right, Dir.L)},     //bottom
         {new dNs(Side.top, Dir.Un), new dNs(Side.left, Dir.U), new dNs(Side.bottom, Dir.U), new dNs(Side.right, Dir.Un)},   //back
         {new dNs(Side.back, Dir.L), new dNs(Side.top, Dir.R), new dNs(Side.front, Dir.Ln), new dNs(Side.bottom, Dir.L)},    //left
@@ -261,12 +276,17 @@ public class GameScript : MonoBehaviour
         // up direction             left direction              down direction              right direction
     };
 
-    /**
-    <value>GameSolution excluding shifted cubes (SearchForMistakes)</value>
-    **/
+    /// <summary>
+    /// GameSolution excluding shifted cubes (SearchForMistakes)
+    /// </summary>
     private bool[][,] shiftedGameSolution;
 
-    // put edge in 1d array
+    /// <summary>
+    /// Get just an edge from the side
+    /// </summary>
+    /// <param name="side_">Side you want to get edge from</param>
+    /// <param name="edge">Which edge (reversed are returned with direction with 'n' e.g. Dir.Rn)</param>
+    /// <returns>Edge from the side in 1D array</returns>
     private bool[] GetEdge(Side side_, Dir edge){
         bool[] rtnValue = new bool[variantInt];
         int l = variantInt - 1;
@@ -296,7 +316,13 @@ public class GameScript : MonoBehaviour
                 rtnValue[l - i] = gameSolution[(int)side_][i, l];
         return rtnValue;
     }
-    // though 4 edges of selected side
+
+    /// <summary>
+    /// Check side if it matches with already placed ones
+    /// </summary>
+    /// <param name="side_">Side you are checking</param>
+    /// <param name="force">If true, remove already placed sides if they overlap with one you are checking</param>
+    /// <returns>True if side matches, false otherwise</returns>
     private bool CheckSideInEveryDirection(Side side_, bool force = false) {
         for (int i = 0; i < 4; i++) {
             if (!Check2Sides(side_, (Dir)i)) {
@@ -307,7 +333,12 @@ public class GameScript : MonoBehaviour
         } 
         return true;
     }
-    // find proper edge to check
+    /// <summary>
+    /// Check 2 sides if they are match each other
+    /// </summary>
+    /// <param name="s1">Main side you are checking</param>
+    /// <param name="dir_">In which direction you are checking</param>
+    /// <returns>True if they match, false if some elements overlap</returns>
     private bool Check2Sides(Side s1, Dir dir_) {
         bool[] edge1, edge2;
         edge1 = GetEdge(s1, dir_);
@@ -320,8 +351,17 @@ public class GameScript : MonoBehaviour
         }
         return true;
     }
-    // versions of above methods with detection of incorrectness in side being placed
+
+    // below are versions of above methods with detection of incorrectness in side being placed
     // and adjacent sides
+
+    /// <summary>
+    /// Check side if it matches with already placed ones (and get in arrang param info which elements overlap)
+    /// </summary>
+    /// <param name="side_">Side in which you want to check setting</param>
+    /// <param name="setting_">Setting of side you want to check</param>
+    /// <param name="arrang">Out param of overlapping elements</param>
+    /// <returns>True if overlaps, false if fits (opposite of first method)</returns>
     private bool CheckSideInEveryDirection(Side side_, bool[,] setting_, out bool[,] arrang) {
         // arrangment of incorrect cubes
         if (variant == Variant.x4) arrang = new bool[,] {
@@ -348,6 +388,14 @@ public class GameScript : MonoBehaviour
         }
         return !detectedIncorrectness;
     }
+    /// <summary>
+    /// Check 2 sides if they are match each other (info which elements overlap returned in reference)
+    /// </summary>
+    /// <param name="s1">Side you are checking</param>
+    /// <param name="dir_">In which direction you are checking</param>
+    /// <param name="setting_">Setting of a side you want to place</param>
+    /// <param name="arrang">Reference of overlapping elements</param>
+    /// <returns>True if elements overlap, false otherwise</returns>
     private bool Check2Sides(Side s1, Dir dir_, bool[,] setting_, ref bool[,] arrang) {
         bool detectedIncorrectness = false;
         bool[] edge1, edge2;
@@ -398,9 +446,13 @@ public class GameScript : MonoBehaviour
         return !detectedIncorrectness;
     }
 
-    /**
-    <summary>Put settings to data representaion of puzzle</summary>
-    **/
+    /// <summary>
+    /// Put a setting of a side into data representation of the puzzle
+    /// </summary>
+    /// <param name="side_">On which side you want to place</param>
+    /// <param name="setting_">Setting of side you want to place</param>
+    /// <param name="force">If true, force placing, remove already placed sides which overlap with side that are being placed</param>
+    /// <returns>True if side was correctly placed, false if couldn't be placed</returns>
     public bool PlaceSideOnGameSolution(Side side_, bool[,] setting_, bool force = false) {
         for (int i = 0; i < variantInt; i++) {
             for (int j = 0; j < variantInt; j++) {
@@ -423,9 +475,9 @@ public class GameScript : MonoBehaviour
 
 
     // GENERATION OF RANDOM SOLUTION
-    /**
-    <value>Data representation of solved puzzle (in one of ways at least, shouldn't be used in checking correction of placed side)</value>
-    **/
+    /// <summary>
+    /// Data representation of solved puzzle (in one of ways at least, shouldn't be used in checking correction of placed side)
+    /// </summary>
     public bool[][,] genrSolution {get; private set;}
 
     public void OverrideGeneratedSolution(bool[][,] solution) {
@@ -465,6 +517,10 @@ public class GameScript : MonoBehaviour
     <value>Order in which buttons should be organised in container (index for array is button, int stored at this index - side from solution)</value>
     **/
     public int[] buttonOrder {get; private set;}
+    
+    /// <summary>
+    /// First setting of pieces' buttons
+    /// </summary>
     private void SetButtons(){
         buttons = new Button[6];
 
@@ -477,13 +533,15 @@ public class GameScript : MonoBehaviour
         }
         
     }
+    /// <summary>
+    /// Call after new game, changing pieces
+    /// </summary>
     private void RenewButtons() {
         if (buttons[0] == null)
             SetButtons();
         buttonOrder = RandomizeButtonOrder();
         for (int i = 0; i < 6; i++)
         {
-            // piecesButtonsIndexes[i] = -1;
             int i2 = i;
             buttons[i].onClick.RemoveAllListeners();
             buttons[i].onClick.AddListener(() => PlacePiece(genrSolution[buttonOrder[i2]], i2));
@@ -491,14 +549,20 @@ public class GameScript : MonoBehaviour
             buttons[i].GetComponent<ApplySettingToBtn>().Enabled(true);
         }
     }
+    /// <summary>
+    /// Recalculate cameras' offsets (call after UI chanages)
+    /// </summary>
+    /// <param name="delayBy">Delay in frames</param>
     public void RecalculateButtonsCams(int delayBy = 1) {
-        // bool makeActive = false;
-        // if (!containerOfButtons.activeSelf) {makeActive = true; containerOfButtons.SetActive(true);}
         foreach (Button button in buttons) {
             button.GetComponent<ApplySettingToBtn>().RecalculateUI(delayBy);
         }
-        // if (makeActive) containerOfButtons
     }
+    /// <summary>
+    /// Randomize order of pieces' buttons (or set default order)
+    /// </summary>
+    /// <param name="randomize">False if you want default order of buttons</param>
+    /// <returns>Order of buttons</returns>
     private int[] RandomizeButtonOrder(bool randomize = true) {
         int[] order = new int[6] {0, 1, 2, 3, 4, 5};
         if (randomize) {
@@ -516,9 +580,18 @@ public class GameScript : MonoBehaviour
         }
         return order;
     }
+    /// <summary>
+    /// Enable/disable piece's button
+    /// </summary>
+    /// <param name="index">Index of button</param>
+    /// <param name="toEnable">True if you want to enable, false if you want to disable</param>
     private void EnabledButton(int index, bool toEnable) {
         buttons[index].GetComponent<ApplySettingToBtn>().Enabled(toEnable);
     }
+    /// <summary>
+    /// Enable/disable submit and cancel buttons' panel
+    /// </summary>
+    /// <param name="toEnable">True if you want to enable, false if you want to disable</param>
     private void EnabledYesNoButtons(bool toEnable) {
         if (yesNoPanelAnimation != null) {
             LeanTween.cancel(yesNoPanelAnimation.id);
@@ -531,32 +604,23 @@ public class GameScript : MonoBehaviour
 
 
 
-
-
     // ROTATING WORKSPACE
-
+    /// <value>
+    /// Default rotation of workspace
+    /// </value>
     private Quaternion defaultRotation;
-    // private Vector3[] rotationOfWorkspace = new Vector3[6] {
-    //     new Vector3(-90, 0, 0),  // bottom
-    //     new Vector3(0, 0, 0),   // back
-    //     new Vector3(0, 90, 0),  // left
-    //     new Vector3(0, -90, 0), // right
-    //     new Vector3(0, 180, 0), // front
-    //     new Vector3(90, 0, 0)  // top
-    // };
-
-
-
-
 
 
 
     // DELETING PIECES
 
-    private RaycastHit hit;
-
+    /// <summary>
+    /// Get information which piece is being removed (long touch on screen)
+    /// </summary>
+    /// <param name="touchPos">Position of touch</param>
     public void GetDataFromTouch(Vector2 touchPos) {
         if (!duringPlacing) {
+            RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(touchPos);
             Piece piece;
 
@@ -597,41 +661,111 @@ public class GameScript : MonoBehaviour
 
 
 
-
-
-
     // APPEARANCE
 
+    /// <summary>
+    /// Currently picked theme
+    /// </summary>
+    /// <value>By default it's BasicStone (or set from PlayerPrefs)</value>
     public Themes gameTheme {get; private set;} = Themes.BasicStone;
+    /// <summary>
+    /// Counter of placed sides
+    /// </summary>
     public int placedSides {get; private set;} = 0;
+    /// <summary>
+    /// Info which sides have already been placed
+    /// </summary>
     public bool[] placedSidesArray {get; private set;} = {O, O, O, O, O, O};
+    /// <summary>
+    /// Array of Pieces present on screen
+    /// </summary>
     private GameObject[] finalPieces;
+    /// <summary>
+    /// Reference to Piece that are being placed
+    /// </summary>
     private GameObject placedPiece;
-    private Side placedSide;
+    /// <summary>
+    /// True if rotation occurs at the moment
+    /// </summary>
     private bool duringRotationPiece;
-    // private bool rotationPieceJustStarted;
+    /// <summary>
+    /// How many times Piece should be rotated anticlockwise during after GameObject's rotation finishes
+    /// </summary>
     private int pieceRotationInInt = 0;
+    /// <summary>
+    /// How much piece's GameObject should be rotated by angle
+    /// </summary>
     private float pieceDestinedRotationY;
+    /// <summary>
+    /// First frame of piece's rotation (or before rotation)
+    /// </summary>
     private bool rotationPieceJustStarted = true;
+    /// <summary>
+    /// LeanTween animation of moving piece away from workspace
+    /// </summary>
     private LTDescr rotationPieceAwayMovement = new LTDescr();
+    /// <summary>
+    /// True if Piece is currently being placed
+    /// </summary>
     public bool duringPlacing {get; private set;} = false;
-    /**
-    <value>Rotation of workspace after game is finished</value>
-    **/
+    /// <summary>
+    /// Rotation of workspace (one that happens after game is finished)
+    /// </summary>
     private bool duringRotationWorkspace = false;
+    /// <summary>
+    /// First frame after placing started (or before)
+    /// </summary>
     private bool placingJustStarted = true;
+    /// <summary>
+    /// Index of position of SteeringWheel's pointer resposible for setting position for Piece which is being placed
+    /// </summary>
     private int posIndex = 0;
+    /// <summary>
+    /// Index of position of SteeringWheel's pointer resposible for setting rotation for Piece which is being placed
+    /// </summary>
     private int rotIndex = 0;
+    /// <summary>
+    /// Accept placing button was pressed in last frame
+    /// </summary>
     private bool acceptButtonPressed = false;
+    /// <summary>
+    /// Cancel placing button was pressed in last frame
+    /// </summary>
     private bool cancelButtonPressed = false;
+    /// <summary>
+    /// Available sides where player can place Piece (not the same as sides without Pieces placed)
+    /// </summary>
     private Side[] available;
+    /// <summary>
+    /// On which side from available is now Piece that are being placed
+    /// </summary>
     private int currentPositionFromAvailable = 0;
+    /// <summary>
+    /// SteeringWheel's (position) pointer position index increased/decreased/stayed the same
+    /// </summary>
     IndexStateChange posState = IndexStateChange.stay;
+    /// <summary>
+    /// SteeringWheel's (rotation) pointer position index increased/decreased/stayed the same
+    /// </summary>
     IndexStateChange rotState = IndexStateChange.stay;
-    public static float lengthOfSide {get; private set;} = 20f;
-    private static float s3Len;
+    /// <summary>
+    /// Size of one element of Piece (needed for calculation of position in workspace)
+    /// </summary>
+    /// <value>By default it is 20f</value>
+    public static readonly float lengthOfSide {get; private set;} = 20f;
+    /// <summary>
+    /// [lengthOfSide] multiplied by some value (needed for calculation of position in workspace)
+    /// </summary>
+    private static float lMultip;
+    /// <summary>
+    /// Calculated position for Pieces in workspace
+    /// </summary>
     public Vector3[] positionForSides {get; private set;}
-    public Vector3[] rotationForSides {get; private set;} = new Vector3[6] {
+    /// <summary>
+    /// Rotation for Pieces in workspace
+    /// </summary>
+    /// <value>Rotations are set by default</value>
+    public readonly Vector3[] rotationForSides {get; private set;} = new Vector3[6] {
         new Vector3(180, 0, 0),   // bottom
         new Vector3(90, 0, 0), // back
         new Vector3(0, 180, -90), // left
@@ -641,18 +775,45 @@ public class GameScript : MonoBehaviour
     };
 
     [Header("Appearance:")]
+    /// <summary>
+    /// Prefab of Piece (old) in variant 3x3 (unused?)
+    /// </summary>
     public GameObject copyOfPiece3;
+    /// <summary>
+    /// Prefab of Piece (old) in variant 4x4 (unused?)
+    /// </summary>
     public GameObject copyOfPiece4;
+    /// <summary>
+    /// Prefab of PiecePG
+    /// </summary>
     public GameObject copyOfPiecePG;
+    /// <summary>
+    /// If true use PiecePG, if false use Piece (old) (false might not be working)
+    /// </summary>
     public bool proceduralGeneratedMesh;
+    /// <summary>
+    /// Currently choosed prefab of Piece/PiecePG
+    /// </summary>
     private GameObject copyOfPiece;
+    /// <summary>
+    /// Transform of workspace
+    /// </summary>
     public Transform workspace;
+    /// <summary>
+    /// Colors for Pieces
+    /// </summary>
     public Color[] colors = new Color[6];
     #if UNITY_EDITOR
     public bool debugColorsOn = false;
     public Color[] debugColors = new Color[6];
     #endif
+    /// <summary>
+    /// Color for Piece that are being placed at the moment
+    /// </summary>
     public Color colorForPlacing = new Color();
+    /// <summary>
+    /// Color for elements of currently placed Piece that overlap
+    /// </summary>
     public Color colorForMistakes = new Color();
     public float movePlacedPieceForwardFor = 0f;
 
@@ -702,6 +863,10 @@ public class GameScript : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Submit or cancel button was pressed
+    /// </summary>
+    /// <param name="accept">True if submit button, false if cancel button</param>
     public void ClickedActionButton(bool accept) {
         if (duringPlacing) {
             if (accept)
@@ -783,6 +948,7 @@ public class GameScript : MonoBehaviour
             }
         }
     }
+
 
     private void RemovePieceAt(Side side_) {
         placedSides--;
@@ -1129,14 +1295,14 @@ public class GameScript : MonoBehaviour
         if (proceduralGeneratedMesh) {
             copyOfPiece = copyOfPiecePG;
             // copyOfPiece.GetComponent<PiecePG>().ChangeVariant(variant);
-            s3Len = (variant == Variant.x3 ? 1f : 1.5f) * lengthOfSide;
+            lMultip = (variant == Variant.x3 ? 1f : 1.5f) * lengthOfSide;
         } else {
             if (variant == Variant.x3) {
-                s3Len = 1f * lengthOfSide;
+                lMultip = 1f * lengthOfSide;
                 copyOfPiece = copyOfPiece3;
             }
             if (variant == Variant.x4) {
-                s3Len = 1.5f * lengthOfSide;
+                lMultip = 1.5f * lengthOfSide;
                 copyOfPiece = copyOfPiece4;
             }
         }
@@ -1151,12 +1317,12 @@ public class GameScript : MonoBehaviour
         };
 
         positionForSides = new Vector3[6] {
-            new Vector3(0, -s3Len, 0),  // bottom
-            new Vector3(0, 0, s3Len),   // back
-            new Vector3(-s3Len, 0, 0),  // left
-            new Vector3(s3Len, 0, 0),   // right
-            new Vector3(0, 0, -s3Len),  // front
-            new Vector3(0, s3Len, 0),   // top
+            new Vector3(0, -lMultip, 0),  // bottom
+            new Vector3(0, 0, lMultip),   // back
+            new Vector3(-lMultip, 0, 0),  // left
+            new Vector3(lMultip, 0, 0),   // right
+            new Vector3(0, 0, -lMultip),  // front
+            new Vector3(0, lMultip, 0),   // top
         };
         for (int i = 0; i < 6; i++)
             buttons[i].GetComponent<ApplySettingToBtn>().ChangeVariant(variant);
